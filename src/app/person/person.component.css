@@ -1,0 +1,104 @@
+#app {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  width: 100%;
+  display: table;
+  text-align: center;
+}
+
+#title {
+  font-size: 40px;
+  text-align: center;
+  color: #054372;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+#add-person {
+  width: 33%;
+  display: table-cell;
+}
+
+#expenses {
+  display: table-cell;
+  width: 33%;
+}
+
+#refunds {
+  display: table-cell;
+  width: 33%;
+}
+
+#app div {
+  margin-bottom: 80px;
+}
+
+h1 {
+  font-size: 32px;
+  color: #186aa8;
+  padding-bottom: 10px;
+}
+
+#app h2 {
+  font-size: 20px;
+  color: black;
+  padding-bottom: 5px;
+}
+
+#app p {
+  font-size: 16px;
+  padding-bottom: 10px;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+#init {
+  background: #1e95ee;
+  border-radius: 100px;
+  padding: 15px 40px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.15em;
+}
+
+#init:hover {
+  background: #6cb8f2;
+}
+
+.btns {
+  display: inline-block;
+  min-width: 110px;
+  margin: 15px 5px;
+  padding: 10px 15px 12px;
+  font: 700 18px/1 'Open Sans', sans-serif;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 1px rgba(0,0,0,.1), inset 0 -10px 20px rgba(0,0,0,.1);
+  cursor: pointer;
+  background: rgb(45, 107, 170);
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+}
+
+.btns:hover {
+  background: #48c;
+}
+
+.small-btn {
+  display: inline-block;
+  font: 16px 'Open Sans', sans-serif;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 1px rgba(0,0,0,.1), inset 0 -10px 20px rgba(0,0,0,.1);
+  cursor: pointer;
+  background: rgb(45, 107, 170);
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+}
+
+#select-person {
+  font-size: 16px;
+}
+
+input {
+  font-size: 16px;
+}

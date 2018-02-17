@@ -1,16 +1,76 @@
-<h2>Add a person</h2>
-Name : <input type="text" #personName><button (click)='addPerson(personName.value)'>+</button>
-<br>
-<h2>Persons</h2>
-<ul>
-  <li *ngFor="let person of persons">
-    {{ person }}
-  </li>
-</ul>
+<h1 id="title">Faire ses comptes sans encombres</h1>
+
+<div id="app">
+
+  <div style="display: table-row">
+    <div id="add-person">
+      <h1>PERSONNES</h1>
+
+      <h2>Ajouter une personne</h2>
+
+      <form ng-submit="addPerson()">
+        <input autofocus placeholder="Nom" autocomplete="off" name="name" type="text" [(ngModel)]="personName"><button (click)='addPerson()' class="small-btn">+</button>
+      </form>
+      <br>
+      <br>
+      <h2>Personnes ajoutées :</h2>
+      <ul>
+        <li *ngFor="let person of persons">
+          {{ person.name }}
+        </li>
+      </ul>
+
+      <button class="btns" (click)='init()'>Commencer</button>
+    </div>
+
+    <div *ngIf="started">
+      <div id="expenses">
+        <div>
+          <h1>DÉPENSES</h1>
+          <h2>Ajouter une dépense</h2>
+
+          <form ng-submit="addRefundsForCheckedPersons(expense.value)">
+            <p>
+              Qui a payé :
+              <select id="select-person" name="selectedPerson" [(ngModel)]="selectedPerson">
+                <option *ngFor="let person of persons">{{person.name}}</option>
+              </select>
+            </p>
+
+            <span ng-style="{padding-bottom: 0px}">Pour qui :</span>
+            <ul>
+              <li *ngFor="let person of persons">
+                  <input type="checkbox"
+                  [checked]="person.checked"
+                  (change)="person.checked = !person.checked"/>{{ person.name }}
+              </li>
+            </ul>
+
+            <p>
+              <input type="text" placeholder="Montant" name="expenseAmount" [(ngModel)]="expenseValue">
+              <button class="small-btn" (click)='addRefundsForCheckedPersons()'>+</button>
+            </p>
 
 
-<select [(ngModel)]="selectedPerson">
-    <option *ngFor="let person of persons">{{person}}</option>
-</select>
+          </form>
+        </div>
+      </div>
 
-<p>{{ selectedPerson }}</p>
+      <div id="refunds">
+        <h1>REMBOURSEMENTS</h1>
+        <ul>
+          <li *ngFor="let person of persons">
+            <ul *ngFor="let person2 of persons" [hidden]="person.name === person2.name">
+                <li ng-style="{text-align:justify; left:50%}">
+                  {{person.name}} doit {{ person.refunds.refundToPersons.get(person2.name) }}$ à {{person2.name}}
+                </li>
+            </ul>
+            <br>
+          </li>
+        </ul>
+
+        <button class="btns" (click)='recalculate()'>Recalculer</button>
+      </div>
+    </div>
+  </div>
+</div>
