@@ -4,11 +4,11 @@ export class Person {
 
   name: String;
   checked: boolean;
-  refunds: Refund;
+  refunds: Map<String, number>;
 
   constructor(name) {
     this.name = name;
-    this.refunds = new Refund();
+    this.refunds = new Map();
   }
 
 }

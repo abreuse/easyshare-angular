@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Person } from '../person';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-person',
@@ -15,9 +16,9 @@ export class PersonComponent implements OnInit {
   started: boolean;
   personName: String = '';
   expenseValue: any;
+  tax: any;
 
   addPerson() {
-    console.log(this.personName);
     this.persons.push(new Person(this.personName));
     this.personName = null;
   }
@@ -27,17 +28,16 @@ export class PersonComponent implements OnInit {
       alert('Ajoutez au minimum 2 personnes !');
       return;
     }
+
     this.selectedPerson = this.persons[0].name;
     this.started = true;
 
     for (const person of this.persons) {
       for (const otherPerson of this.persons) {
-        if (person.name === otherPerson.name) {
+        if (person.name === otherPerson.name)
           continue;
-        }
 
-        person.refunds.refundToPersons.set(otherPerson.name, 0);
-
+        person.refunds.set(otherPerson.name, 0);
       }
       person.checked = true;
     }
@@ -55,28 +55,31 @@ export class PersonComponent implements OnInit {
       return;
     }
 
+    if(this.tax == undefined)
+      this.tax = 1;
+
+    else if(!regexp.test(this.tax)) {
+      alert('Entrez une taxe valide (ex : 1.15)');
+      return;
+    }
+
     const nbOfCheckedPersons = this.getNbOfCheckedPersons();
-    const refund = this.expenseValue / nbOfCheckedPersons;
+    const refund = this.expenseValue * this.tax / nbOfCheckedPersons;
 
     for (const person of this.persons) {
       if (person.checked) {
 
-        if (person.name === this.selectedPerson) {
+        if (person.name === this.selectedPerson)
           continue;
-        }
 
-        if (!person.refunds.refundToPersons.get(this.selectedPerson)) {
-          person.refunds.refundToPersons.set(this.selectedPerson, 0);
-        }
+        if (!person.refunds.get(this.selectedPerson))
+          person.refunds.set(this.selectedPerson, 0);
 
-        let refunds = person.refunds.refundToPersons.get(this.selectedPerson);
+        let refunds = person.refunds.get(this.selectedPerson);
         refunds += refund;
-        person.refunds.refundToPersons.set(this.selectedPerson, refunds);
+        person.refunds.set(this.selectedPerson, refunds);
       }
-
-      console.log(person.refunds.refundToPersons);
     }
-
     this.expenseValue = null;
   }
 
@@ -84,32 +87,30 @@ export class PersonComponent implements OnInit {
   recalculate() {
     for (const person of this.persons) {
       for (const otherPerson of this.persons) {
-        if (person.name === otherPerson.name) {
-          continue;
-        }
 
-        if (person.refunds.refundToPersons.get(otherPerson.name) > otherPerson.refunds.refundToPersons.get(person.name)) {
-          person.refunds.refundToPersons.set(otherPerson.name,
-            person.refunds.refundToPersons.get(otherPerson.name) - otherPerson.refunds.refundToPersons.get(person.name));
-          otherPerson.refunds.refundToPersons.set(person.name, 0);
-          }else {
-            otherPerson.refunds.refundToPersons.set(person.name,
-              otherPerson.refunds.refundToPersons.get(person.name) - person.refunds.refundToPersons.get(otherPerson.name));
-            person.refunds.refundToPersons.set(otherPerson.name, 0);
+        if (person.name === otherPerson.name)
+          continue;
+
+        if (person.refunds.get(otherPerson.name) > otherPerson.refunds.get(person.name)) {
+          person.refunds.set(otherPerson.name,
+            person.refunds.get(otherPerson.name) - otherPerson.refunds.get(person.name));
+          otherPerson.refunds.set(person.name, 0);
+        }
+        else {
+          otherPerson.refunds.set(person.name,
+            otherPerson.refunds.get(person.name) - person.refunds.get(otherPerson.name));
+          person.refunds.set(otherPerson.name, 0);
         }
       }
-
     }
   }
 
    getNbOfCheckedPersons(): number {
     let count = 0;
 
-    for (const person of this.persons) {
-      if (person.checked) {
+    for (const person of this.persons)
+      if (person.checked)
         count++;
-      }
-    }
 
     return count;
   }
@@ -119,5 +120,4 @@ export class PersonComponent implements OnInit {
     this.selectedPerson = '';
     this.persons = [];
   }
-
 }

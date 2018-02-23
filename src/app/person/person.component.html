@@ -33,7 +33,7 @@
             <p>
               Qui a payé :
               <select id="select-person" name="selectedPerson" [(ngModel)]="selectedPerson">
-                <option *ngFor="let person of persons">{{person.name}}</option>
+                <option *ngFor="let person of persons">{{ person.name }}</option>
               </select>
             </p>
 
@@ -49,9 +49,9 @@
             <p>
               <input type="text" placeholder="Montant" name="expenseAmount" [(ngModel)]="expenseValue">
               <button class="small-btn" (click)='addRefundsForCheckedPersons()'>+</button>
+            <br>
+              <input type="text" placeholder="Taxe" name="taxAmount" [(ngModel)]="tax">
             </p>
-
-
           </form>
         </div>
       </div>
@@ -62,7 +62,7 @@
           <li *ngFor="let person of persons">
             <ul *ngFor="let person2 of persons" [hidden]="person.name === person2.name">
                 <li ng-style="{text-align:justify; left:50%}">
-                  {{person.name}} doit {{ person.refunds.refundToPersons.get(person2.name) }}$ à {{person2.name}}
+                  {{ person.name }} doit {{ person.refunds.get(person2.name) | number:'1.0-2'}}$ à {{ person2.name }}
                 </li>
             </ul>
             <br>
