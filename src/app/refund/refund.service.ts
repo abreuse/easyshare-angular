@@ -4,6 +4,10 @@ import {Person} from '../person';
 @Injectable()
 export class RefundService {
 
+  private static lastRefund: any;
+  private static persons: Person[];
+  private static lastSelectedPerson: string;
+
   constructor() { }
 
   static initRefunds(persons: Person[]) {
@@ -21,6 +25,9 @@ export class RefundService {
 
 
   static setRefunds(persons: Person[], selectedPerson, refund) {
+
+    this.saveRefundForBackup(persons, selectedPerson, refund);
+
     for (const person of persons) {
       if (person.checked) {
 
@@ -34,6 +41,18 @@ export class RefundService {
     }
 
     return persons;
+  }
+
+
+  static revertLastRefund() {
+    return this.setRefunds(this.persons, this.lastSelectedPerson, - this.lastRefund);
+  }
+
+
+  private static saveRefundForBackup(persons: Person[], selectedPerson: any, refund: any) {
+    this.persons = persons;
+    this.lastRefund = refund;
+    this.lastSelectedPerson = selectedPerson;
   }
 
 
@@ -65,4 +84,5 @@ export class RefundService {
   private static calculateTheDifferenceOwed(pers1: Person, pers2: Person) {
     return pers1.refunds.get(pers2.name) - pers2.refunds.get(pers1.name);
   }
+
 }

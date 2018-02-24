@@ -44,4 +44,11 @@ describe('RefundService', () => {
     persons = RefundService.recalculate(persons);
     expect(persons[1].refunds.get('Foo')).toEqual(20);
   });
+
+  it('revert last refund', () => {
+    RefundService.revertLastRefund();
+    persons = RefundService.recalculate(persons);
+    expect(persons[1].refunds.get('Foo')).toEqual(50);
+    expect(persons[0].refunds.get('Bar')).toEqual(0);
+  })
 });

@@ -69,6 +69,10 @@ export class PersonComponent implements OnInit {
     return this.persons.filter(person => person.checked).length;
   }
 
+  revertLastRefund() {
+    RefundService.revertLastRefund();
+    this.recalculate();
+  }
 
   recalculate() {
     this.persons = RefundService.recalculate(this.persons);
