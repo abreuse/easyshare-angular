@@ -1,7 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { RefundService } from './refund.service';
-import {Person} from '../person';
+import {Person} from '../person/person';
 
 describe('RefundService', () => {
 

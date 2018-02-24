@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import {Person} from '../person';
+import {Person} from '../person/person';
+import {RefundHistory} from './refund-history';
 
 @Injectable()
 export class RefundService {
 
-  private static lastRefund: any;
-  private static persons: Person[];
-  private static lastSelectedPerson: string;
+  private static history: RefundHistory[] = [];
 
   constructor() { }
 
@@ -24,9 +23,10 @@ export class RefundService {
   }
 
 
-  static setRefunds(persons: Person[], selectedPerson, refund) {
+  static setRefunds(persons: Person[], selectedPerson, refund, save) {
 
-    this.saveRefundForBackup(persons, selectedPerson, refund);
+    if(save)
+      this.saveRefundForBackup(persons, selectedPerson, refund);
 
     for (const person of persons) {
       if (person.checked) {
@@ -43,16 +43,23 @@ export class RefundService {
     return persons;
   }
 
-
-  static revertLastRefund() {
-    return this.setRefunds(this.persons, this.lastSelectedPerson, - this.lastRefund);
+  private static saveRefundForBackup(persons: Person[], selectedPerson: any, refund: any) {
+    this.history.push(new RefundHistory(persons.map(x => Object.assign({}, x)), selectedPerson, refund));
   }
 
+  static revertLastRefund() {
+    const lastHistory = this.history[this.history.length - 1];
+    const persons = this.setRefunds(lastHistory.persons, lastHistory.lastSelectedPerson, - lastHistory.lastRefund, false);
+    this.history.pop();
+    return persons;
+  }
 
-  private static saveRefundForBackup(persons: Person[], selectedPerson: any, refund: any) {
-    this.persons = persons;
-    this.lastRefund = refund;
-    this.lastSelectedPerson = selectedPerson;
+  static hasRefundHistory() {
+    return this.history.length > 0;
+  }
+
+  static initRefundHistory() {
+    this.history = [];
   }
 
 

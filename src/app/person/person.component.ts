@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Person } from '../person';
+import { Person } from './person';
 import { DecimalPipe } from '@angular/common';
 import {ExpenseService} from '../expense/expense-service.service';
 import {RefundService} from '../refund/refund.service';
@@ -44,6 +44,7 @@ export class PersonComponent implements OnInit {
       person.checked = true;
 
     this.persons = RefundService.initRefunds(this.persons);
+    RefundService.initRefundHistory();
   }
 
 
@@ -59,7 +60,7 @@ export class PersonComponent implements OnInit {
       this.tax = 1;
 
     const refund = ExpenseService.calculateExpense(this.expenseValue, this.tax, this.getNbOfCheckedPersons());
-    this.persons = RefundService.setRefunds(this.persons, this.selectedPerson, refund);
+    this.persons = RefundService.setRefunds(this.persons, this.selectedPerson, refund, true);
 
     this.expenseValue = null;
   }
@@ -69,9 +70,14 @@ export class PersonComponent implements OnInit {
     return this.persons.filter(person => person.checked).length;
   }
 
+  hasRefundHistory() {
+    console.log('disabled?')
+    return RefundService.hasRefundHistory();
+  }
+
   revertLastRefund() {
     RefundService.revertLastRefund();
-    this.recalculate();
+    //this.recalculate();
   }
 
   recalculate() {

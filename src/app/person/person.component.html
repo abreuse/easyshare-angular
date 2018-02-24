@@ -55,7 +55,7 @@
           </form>
 
           <br>
-          <button class="btns" (click)='revertLastRefund()'>Annuler la dernière dépense</button>
+          <button class="btns" *ngIf="hasRefundHistory()" (click)='revertLastRefund()'>Annuler la dernière dépense</button>
         </div>
       </div>
 
