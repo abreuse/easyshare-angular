@@ -71,7 +71,6 @@ export class PersonComponent implements OnInit {
   }
 
   hasRefundHistory() {
-    console.log('disabled?')
     return RefundService.hasRefundHistory();
   }
 
