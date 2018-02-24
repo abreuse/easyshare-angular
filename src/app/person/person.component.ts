@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Person } from '../person';
 import { DecimalPipe } from '@angular/common';
+import {ExpenseService} from '../expense/expense-service.service';
+import {RefundService} from '../refund/refund.service';
 
 @Component({
   selector: 'app-person',
@@ -9,7 +11,7 @@ import { DecimalPipe } from '@angular/common';
 })
 export class PersonComponent implements OnInit {
 
-  constructor() { }
+  constructor(private expenseService: ExpenseService, private refundService: RefundService) {}
 
   persons: Person[];
   selectedPerson: String;
@@ -18,9 +20,14 @@ export class PersonComponent implements OnInit {
   expenseValue: any;
   tax: any;
 
-  addPerson() {
-    this.persons.push(new Person(this.personName));
-    this.personName = null;
+  ngOnInit() {
+    this.started = false;
+    this.selectedPerson = '';
+    this.clearPersons();
+  }
+
+  clearPersons() {
+    this.persons = [];
   }
 
   init() {
@@ -31,93 +38,39 @@ export class PersonComponent implements OnInit {
 
     this.selectedPerson = this.persons[0].name;
     this.started = true;
+    this.tax = 1;
 
-    for (const person of this.persons) {
-      for (const otherPerson of this.persons) {
-        if (person.name === otherPerson.name)
-          continue;
-
-        person.refunds.set(otherPerson.name, 0);
-      }
+    for (const person of this.persons)
       person.checked = true;
-    }
 
-    this.selectedPerson = this.persons[0].name;
+    this.persons = RefundService.initRefunds(this.persons);
+  }
+
+
+  addPerson() {
+    this.persons.push(new Person(this.personName));
+    this.personName = null;
   }
 
 
   addRefundsForCheckedPersons() {
 
-    const regexp: RegExp = /^\d*[.]?\d*$/;
-
-    if (!regexp.test(this.expenseValue)) {
-      alert('Entrez un nombre valide (ex : 10.45)');
-      return;
-    }
-
     if(this.tax == undefined)
       this.tax = 1;
 
-    else if(!regexp.test(this.tax)) {
-      alert('Entrez une taxe valide (ex : 1.15)');
-      return;
-    }
+    const refund = ExpenseService.calculateExpense(this.expenseValue, this.tax, this.getNbOfCheckedPersons());
+    this.persons = RefundService.setRefunds(this.persons, this.selectedPerson, refund);
 
-    const nbOfCheckedPersons = this.getNbOfCheckedPersons();
-    const refund = this.expenseValue * this.tax / nbOfCheckedPersons;
-
-    for (const person of this.persons) {
-      if (person.checked) {
-
-        if (person.name === this.selectedPerson)
-          continue;
-
-        if (!person.refunds.get(this.selectedPerson))
-          person.refunds.set(this.selectedPerson, 0);
-
-        let refunds = person.refunds.get(this.selectedPerson);
-        refunds += refund;
-        person.refunds.set(this.selectedPerson, refunds);
-      }
-    }
     this.expenseValue = null;
   }
 
 
+  getNbOfCheckedPersons(): number {
+    return this.persons.filter(person => person.checked).length;
+  }
+
+
   recalculate() {
-    for (const person of this.persons) {
-      for (const otherPerson of this.persons) {
-
-        if (person.name === otherPerson.name)
-          continue;
-
-        if (person.refunds.get(otherPerson.name) > otherPerson.refunds.get(person.name)) {
-          person.refunds.set(otherPerson.name,
-            person.refunds.get(otherPerson.name) - otherPerson.refunds.get(person.name));
-          otherPerson.refunds.set(person.name, 0);
-        }
-        else {
-          otherPerson.refunds.set(person.name,
-            otherPerson.refunds.get(person.name) - person.refunds.get(otherPerson.name));
-          person.refunds.set(otherPerson.name, 0);
-        }
-      }
-    }
-  }
-
-   getNbOfCheckedPersons(): number {
-    let count = 0;
-
-    for (const person of this.persons)
-      if (person.checked)
-        count++;
-
-    return count;
-  }
-
-  ngOnInit() {
-    this.started = false;
-    this.selectedPerson = '';
-    this.persons = [];
+    this.persons = RefundService.recalculate(this.persons);
   }
 }

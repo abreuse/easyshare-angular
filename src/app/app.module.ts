@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { PersonComponent } from './person/person.component';
+import {ExpenseService} from './expense/expense-service.service';
+import {RefundService} from './refund/refund.service';
 
 
 @NgModule({
@@ -15,7 +17,10 @@ import { PersonComponent } from './person/person.component';
     BrowserModule,
     FormsModule
   ],
-  providers: [],
+  providers: [
+    ExpenseService,
+    RefundService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
