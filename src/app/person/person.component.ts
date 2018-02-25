@@ -60,6 +60,10 @@ export class PersonComponent implements OnInit {
       this.tax = 1;
 
     const refund = ExpenseService.calculateExpense(this.expenseValue, this.tax, this.getNbOfCheckedPersons());
+
+    if(!refund)
+      return '';
+
     this.persons = RefundService.setRefunds(this.persons, this.selectedPerson, refund, true);
 
     this.expenseValue = null;

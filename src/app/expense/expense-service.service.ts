@@ -11,7 +11,7 @@ export class ExpenseService {
     if(!this.validateExpenseAndTax(expense, tax))
       return '';
 
-    return parseFloat(((expense * tax) / nbPersons).toFixed(2));
+    return parseFloat(((expense * tax) / nbPersons).toFixed(3));
   }
 
 
